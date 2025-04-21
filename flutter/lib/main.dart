@@ -1,11 +1,19 @@
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:chat_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/screens/one_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';   
 import 'package:chat_app/screens/chat_screen.dart';
-void main() {
+
+
+
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
