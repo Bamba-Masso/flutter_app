@@ -21,7 +21,7 @@ class _RedirectionPageState extends State<RedirectionPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         }else if (snapshot.hasData){
-          return const HomePage();
+          return const HomeScreen();
         }else{
           return const LoginScreen();
         }

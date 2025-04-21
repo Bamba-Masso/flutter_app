@@ -9,7 +9,6 @@ class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
-
 class _SignUpScreenState extends State<SignUpScreen> {
   bool _isLoading = false;
   final _forKey = GlobalKey<FormState>();
@@ -27,7 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Container(
               height: 180,
               decoration: const BoxDecoration(
-                color: Color(0xFF009688),
+                color: Color.fromARGB(255, 2, 63, 43),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(100),
                   bottomRight: Radius.circular(100),
@@ -142,13 +141,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                     ),
                     const SizedBox(height: 30),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
                           if (_forKey.currentState!.validate()) {
                             setState(() {
-                              //  _isLoading = true ;
+                                _isLoading = true ;
                             });
                             setState(() {
                               _isLoading = true;

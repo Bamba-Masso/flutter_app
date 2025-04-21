@@ -25,7 +25,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chat App',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.teal,
+        scaffoldBackgroundColor: const Color(0xFFE6F3F0),
       ),
        home: const HomeScreen(),
       routes: {
