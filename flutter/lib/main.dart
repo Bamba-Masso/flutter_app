@@ -2,7 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:chat_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app/screens/home_screen.dart';
+import 'package:chat_app/screens/redirect.dart';
+// import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/screens/one_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';   
 import 'package:chat_app/screens/chat_screen.dart';
@@ -27,11 +28,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-       home: const HomeScreen(),
+       home: const RedirectionPage(),
       routes: {
         '/one': (context) => const OneScreen(),
         '/register': (context) =>  SignUpScreen(), 
-        '/login': (context) => const LoginScreen(),  
+        '/login': (context) =>  LoginScreen(),  
         '/chat': (context) => const ChatScreen(),     
       },
       debugShowCheckedModeBanner: false,

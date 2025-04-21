@@ -41,16 +41,16 @@ android {
            // signingConfig = signingConfigs.getByName("debug")
        // }
    //}
-    compileSdk = 34
+    compileSdk = 35
 
      ndkVersion = "27.0.12077973"
 
     // le reste :
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.chat_app"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }

@@ -1,9 +1,15 @@
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app/services/firebase/auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
+  LoginScreen({super.key});
+  final _forKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +17,6 @@ class LoginScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-           
             Container(
               height: 180,
               decoration: const BoxDecoration(
@@ -46,51 +51,142 @@ class LoginScreen extends StatelessWidget {
             // Form
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  _buildTextField(label: 'Email'),
-                  const SizedBox(height: 20),
-                  _buildTextField(label: ' Mot de Passe', isPassword: true),
-                  const SizedBox(height: 30),
-
-                 
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ChatScreen(),
-                          ),
-                        );
+              child: Form(
+                key: _forKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email),
+                        labelText: "Email",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "email is required";
+                        } else {
+                          return null;
+                        }
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                    ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      obscureText: true,
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        labelText: "Password",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Password is required";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 30),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_forKey.currentState!.validate()) {
+                            //login
+                            try {
+                              await Auth().loginWithEmaiAndPassword(
+                                _emailController.text.trim(),
+                                _passwordController.text.trim(),
+                              );
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ChatScreen(),
+                                ),
+                              );
+                            } on FirebaseAuthException catch (e) {
+                              Fluttertoast.showToast(
+                                msg:
+                                    "Votre adresse email ou votre mot de passe semblent être incorrects.",
+                              );
+                              print(e.toString());
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("${e.message}"),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.red,
+                                  showCloseIcon: true,
+                                ),
+                              );
+                            }
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const ChatScreen(),
+                          //   ),
+                          // );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          'Se connecter',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 15),
+
+                    TextButton(
+                      onPressed: () {},
                       child: const Text(
-                        'Se connecter',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        "Avez-vous déjà un compte ?",
+                        style: TextStyle(color: Colors.teal),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 15),
+                    const Divider(),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          final user = await Auth().signInWithGoogle();
 
-            
-                  TextButton(
-                    onPressed: () {
-                     
-                    },
-                    child: const Text(
-                      "Avez-vous déjà un compte ?",
-                      style: TextStyle(color: Colors.teal),
+                          if (user != null) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ChatScreen(),
+                              ),
+                            );
+                          } else {
+                            print("Connexion échouée");
+                          }
+                        } catch (e) {
+                          print("Erreur pendant la connexion Google : $e");
+                        }
+                      },
+                      icon: Image.asset("assets/images/google.png", height: 30),
+                      label: const Text("connecter vous avec google "),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -99,15 +195,15 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField({required String label, bool isPassword = false}) {
-    return TextField(
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-    );
-  }
+  // Widget _buildTextField({required String label, bool isPassword = false}) {
+  //   return TextField(
+  //     obscureText: isPassword,
+  //     decoration: InputDecoration(
+  //       labelText: label,
+  //       filled: true,
+  //       fillColor: Colors.white,
+  //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+  //     ),
+  //   );
+  // }
 }

@@ -212,43 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
-                    // _buildTextField(label: 'Prenom Nom'),
-                    // const SizedBox(height: 15),
-                    // _buildTextField(label: 'Email'),
-                    // const SizedBox(height: 15),
-                    // _buildTextField(label: 'Mot de Passe', isPassword: true),
-                    // const SizedBox(height: 15),
-                    // _buildTextField(label: 'Confirmer votre mot de passe', isPassword: true),
-                    // const SizedBox(height: 30),
-                    // SizedBox(
-                    //   width: double.infinity,
-                    //   child: ElevatedButton(
-                    //     onPressed: () {
-
-                    //     },
-                    //     style: ElevatedButton.styleFrom(
-                    //       backgroundColor: Colors.teal,
-                    //       padding: const EdgeInsets.symmetric(vertical: 15),
-                    //       shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(30),
-                    //       ),
-                    //     ),
-                    //     child: const Text(
-                    //       'S\'inscrire',
-                    //       style: TextStyle(fontSize: 18, color: Colors.white),
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 15),
-                    // TextButton(
-                    //   onPressed: () {
-                    //     Navigator.pop(context);
-                    //   },
-                    //   child: const Text(
-                    //     'Vous avez dèjà un compte ?',
-                    //     style: TextStyle(color: Colors.teal),
-                    //   ),
-                    // ),
+                    
                   ],
                 ),
               ),
@@ -259,15 +223,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // Widget _buildTextField({required String label, bool isPassword = false}) {
-  //   return TextField(
-  //     obscureText: isPassword,
-  //     decoration: InputDecoration(
-  //       labelText: label,
-  //       filled: true,
-  //       fillColor: Colors.white,
-  //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-  //     ),
-  //   );
-  // }
+  
 }

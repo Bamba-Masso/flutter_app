@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/services/firebase/auth.dart';
+import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';
 
 class RedirectionPage extends StatefulWidget {
@@ -21,9 +22,9 @@ class _RedirectionPageState extends State<RedirectionPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         }else if (snapshot.hasData){
-          return const HomePage();
+          return const  ChatScreen();
         }else{
-          return const LoginScreen();
+          return  LoginScreen();
         }
       },
     );
