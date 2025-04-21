@@ -1,99 +1,73 @@
-
-import 'package:flutter/material.dart';
 import 'package:chat_app/screens/one_screen.dart';
+import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MaterialApp(home: HomePage()));
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("MyChat"), elevation: 12),
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(color: Colors.white),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text(
-                      "Bienvenue sur My chat",
-                      style: TextStyle(color: Colors.teal, fontSize: 30),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    colors: [Color(0xFF294E28), Color(0xFF031A09)],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(180),
-                    topRight: Radius.circular(180),
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 60),
-                        child: Image.asset(
-                          "assets/images/img3.png",
-                          width: 200, // Largeur définie à 100 pixels
-                          height: 400,
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 60),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const OneScreen(),
-                                ),
-                              );
-                            },
-                            child: Text('Commencer'),
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.teal,
-                              backgroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 50,
-                                vertical: 15,
-                              ),
-                              textStyle: TextStyle(fontSize: 18),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+      body: Stack(
+        children: [
+       
+          Container(
+            color: Color(0xFFB2DFDB), 
+          ),
+         
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.teal.shade100,
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(100),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        
+          Center(
+            child: Image.asset(
+              'assets/images/img3.png',
+              width: 400,
+              height: 400,
+            ),
+          ),
+          
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 60),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const OneScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.teal, 
+                  backgroundColor: Colors.white, 
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  textStyle: TextStyle(fontSize: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30), 
+                  ),
+                ),
+                child: Text('Continuer'),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

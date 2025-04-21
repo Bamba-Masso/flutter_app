@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-       home: const HomePage(),
+       home: const HomeScreen(),
       routes: {
         '/one': (context) => const OneScreen(),
         '/register': (context) => const SignUpScreen(), 
