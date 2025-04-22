@@ -156,6 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             //login
                             try {
                               await Auth().createUserWithEmailAndPassword(
+                                _usernameController.text.trim(),
                                 _emailController.text.trim(),
                                 _passwordController.text.trim(),
                               );

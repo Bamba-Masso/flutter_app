@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:chat_app/services/firebase/auth.dart';
+import 'package:chat_app/screens/home_screen.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -6,6 +8,21 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBar(
+         title: const Text('Chat'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await Auth().logout(); 
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+              );
+            },
+          ),
+        ],
+       ),
       backgroundColor: const Color(0xFFE0F2F1),
       body: SafeArea(
         child: Column(
@@ -60,55 +77,12 @@ class ChatScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: const [
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                    isNew: true,
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
+                
+                 
+                 
                   ChatItem(
                     name: 'Bamba Masso',
                     country: 'Etudiante - Netherlands',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
                     image: 'assets/images/whatsapp.png',
                   ),
                   ChatItem(
