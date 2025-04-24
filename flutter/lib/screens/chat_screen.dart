@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'one_chat.dart'; 
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +11,6 @@ class ChatScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -41,9 +40,6 @@ class ChatScreen extends StatelessWidget {
                 ],
               ),
             ),
-
-
-
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -59,68 +55,41 @@ class ChatScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: const [
+                children: [
                   ChatItem(
                     name: 'Arielle Kouassi',
                     country: 'Etudiante - Côte d\'Ivoire',
                     image: 'assets/images/whatsapp.png',
                     isNew: true,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OneChatScreen(
+                            name: 'Arielle Kouassi',
+                            image: 'assets/images/whatsapp.png',
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   ChatItem(
                     name: 'Bamba Masso',
                     country: 'Etudiante - Côte d\'Ivoire',
                     image: 'assets/images/whatsapp.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OneChatScreen(
+                            name: 'Bamba Masso',
+                            image: 'assets/images/whatsapp.png',
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Netherlands',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Arielle Kouassi',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
-                  ChatItem(
-                    name: 'Bamba Masso',
-                    country: 'Etudiante - Côte d\'Ivoire',
-                    image: 'assets/images/whatsapp.png',
-                  ),
+               
                 ],
               ),
             ),
@@ -136,6 +105,7 @@ class ChatItem extends StatelessWidget {
   final String country;
   final String image;
   final bool isNew;
+  final VoidCallback? onTap;
 
   const ChatItem({
     super.key,
@@ -143,6 +113,7 @@ class ChatItem extends StatelessWidget {
     required this.country,
     required this.image,
     this.isNew = false,
+    this.onTap,
   });
 
   @override
@@ -152,6 +123,7 @@ class ChatItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: ListTile(
+        onTap: onTap,
         leading: CircleAvatar(
           backgroundImage: AssetImage(image),
           radius: 25,

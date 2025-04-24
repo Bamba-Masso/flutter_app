@@ -6,6 +6,7 @@ import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/screens/one_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';   
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/screens/one_chat.dart';
 
 
 
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         '/one': (context) => const OneScreen(),
         '/register': (context) =>  SignUpScreen(), 
         '/login': (context) => const LoginScreen(),  
-        '/chat': (context) => const ChatScreen(),     
+        '/chat': (context) => const ChatScreen(),  
+        '/one_chat': (context) => const OneChatScreen(name: 'Default Name', image: 'whatsapp.png'),
       },
       debugShowCheckedModeBanner: false,
     );
