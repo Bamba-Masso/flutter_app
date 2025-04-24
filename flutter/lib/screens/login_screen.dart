@@ -114,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const ChatScreen(),
+                                  builder: (context) =>  ChatScreen(),
                                 ),
                               );
                             } on FirebaseAuthException catch (e) {
@@ -133,12 +133,7 @@ class LoginScreen extends StatelessWidget {
                               );
                             }
                           }
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const ChatScreen(),
-                          //   ),
-                          // );
+                         
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.teal,
@@ -166,20 +161,33 @@ class LoginScreen extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () async {
                         try {
-                          final user = await Auth().signInWithGoogle();
+                      bool success= await Auth().signInWithGoogle();
 
-                          if (user != null) {
+                          if (success) {
+                              if (!context.mounted) return;
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ChatScreen(),
+                                builder: (context) =>  ChatScreen(),
                               ),
                             );
                           } else {
-                            print("Connexion échouée");
+                            // print("Connexion échouée");
+                             SnackBar(
+                                  content: Text("connexion échoué"),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.red,
+                                  showCloseIcon: true,
+                                );
                           }
                         } catch (e) {
-                          print("Erreur pendant la connexion Google : $e");
+
+                          SnackBar(
+                                  content: Text("${e}"),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.red,
+                                  showCloseIcon: true,
+                                );
                         }
                       },
                       icon: Image.asset("assets/images/google.png", height: 30),

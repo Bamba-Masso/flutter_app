@@ -30,24 +30,36 @@ Future<void> logout() async{
 
   await _firebaseAuth.signOut();
 }
-// CREAT USER WUTH EMAIL-PASSWORD
-Future<void> createUserWithEmailAndPassword(String username, String email,String password)async{
- final credential=await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+// CREAT USER WiTH EMAIL-PASSWORD
+Future<void> createUserWithEmailAndPassword(String username, String email, String password) async {
+  try {
+    final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-String? currentUser= credential.user?.uid;
-  db.collection("Users").doc(currentUser).set({
-    "email":email,
-    "uid":currentUser,
-    "username":username
+    String? currentUser = credential.user?.uid;
 
-  });
+    if (currentUser != null) {
+      await db.collection("Users").doc(currentUser).set({
+        "email": email,
+        "uid": currentUser,
+        "username": username,
+      });
+      print("Utilisateur enregistré avec succès !");
+    } else {
+      print("Erreur : utilisateur non créé.");
+    }
+  } catch (e) {
+    print("Erreur lors de la création de l'utilisateur : $e");
+  }
 }
 
 // LOGIN WITH GOOGLE
 Future<dynamic> signInWithGoogle() async { 
     try { 
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn(); 
-    if (googleUser == null) return null; // L'utilisateur a annulé
+    if (googleUser == null) return false; // L'utilisateur a annulé
 
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication; 
 
@@ -57,10 +69,23 @@ Future<dynamic> signInWithGoogle() async {
     ); 
 
     final userCredential = await _firebaseAuth.signInWithCredential(credential);
-    return userCredential.user;
-    } on Exception catch (e) { 
-      // TODO 
-      print ( 'exception-> $e ' ); 
+       final User? user = userCredential.user;
+        if (user != null) {
+   
+    await FirebaseFirestore.instance.collection("Users").doc(userCredential.user?.uid).set({
+    "email": userCredential.user?.email,
+    "username": userCredential.user?.displayName,
+    "uid": userCredential.user?.uid
+  });
+return true;
+   
+  }
+   return false;
+    } on Exception catch (e,stack) { 
+    
+     print("Connexion échouée : $e");
+     print("Stack trace : $stack");
+     return false;
     } 
   }
 }

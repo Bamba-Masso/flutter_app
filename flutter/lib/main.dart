@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/one': (context) => const OneScreen(),
         '/register': (context) =>  SignUpScreen(), 
         '/login': (context) =>  LoginScreen(),  
-        '/chat': (context) => const ChatScreen(),     
+        '/chat': (context) =>  ChatScreen(),     
       },
       debugShowCheckedModeBanner: false,
     );
