@@ -94,6 +94,7 @@ class _DiscussionState extends State<Discussion> {
                     auth.currentUser!.uid,
                     widget.uid,
                     messageController.text,
+                    DateTime.now().toString(), 
                   );
                   messageController.text = "";
                 }

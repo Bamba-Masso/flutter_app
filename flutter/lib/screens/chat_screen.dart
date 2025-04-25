@@ -4,9 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/services/firebase/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/composants/message.dart';
-
+import 'package:chat_app/screens/profil_screen.dart';
 class ChatScreen extends StatelessWidget {
   ChatScreen({super.key});
   final User? user = Auth().currentUser;
@@ -30,7 +29,14 @@ class ChatScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            onPressed: (){},
+            onPressed: ( ){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ),
+              );
+            },
              icon: const Icon(Icons.person))
         ],
       ),
@@ -88,47 +94,3 @@ extension on User? {
   get username => null;
 }
 
-// class ChatItem extends StatelessWidget {
-//   final String name;
-//   final String country;
-//   final String image;
-//   final bool isNew;
-
-//   const ChatItem({
-//     super.key,
-//     required this.name,
-//     required this.country,
-//     required this.image,
-//     this.isNew = false,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       color: Colors.white,
-//       margin: const EdgeInsets.only(bottom: 12),
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-//       child: ListTile(
-//         leading: CircleAvatar(
-//           backgroundImage: AssetImage(image),
-//           radius: 25,
-//         ),
-//         title: Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
-//         subtitle: Text(country),
-//         trailing: isNew
-//             ? Container(
-//                 padding: const EdgeInsets.all(6),
-//                 decoration: BoxDecoration(
-//                   color: Colors.teal,
-//                   borderRadius: BorderRadius.circular(15),
-//                 ),
-//                 child: const Text(
-//                   'Nouveau',
-//                   style: TextStyle(color: Colors.white, fontSize: 12),
-//                 ),
-//               )
-//             : null,
-//       ),
-//     );
-//   }
-// }

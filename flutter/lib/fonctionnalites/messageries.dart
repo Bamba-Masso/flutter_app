@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Messagerie {
 FirebaseFirestore db = FirebaseFirestore.instance;
 
-  sendMessage(String currentUid,String receiverUid, String message){
+  sendMessage(String currentUid,String receiverUid, String message, String chatId){
     List chatIds=[currentUid, receiverUid];
     chatIds.sort();
     String chatId =chatIds.join("_");
