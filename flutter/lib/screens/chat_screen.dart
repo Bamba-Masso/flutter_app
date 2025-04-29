@@ -41,7 +41,7 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
 
-      backgroundColor: const Color(0xFFE0F2F1),
+      backgroundColor: const Color.fromARGB(255, 181, 224, 222),
 
       body: StreamBuilder(
      

@@ -1,121 +1,84 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+class UserProfile {
+  String username;
+  String email;
+  String phone;
+  String country;
+
+  UserProfile({
+    required this.username,
+    required this.email,
+    required this.phone,
+    required this.country,
+  });
+}
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  late User? user;
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
+  UserProfile profile = UserProfile(
+    username: "arielle20",
+    email: "arielle@email.com",
+    phone: "+22512345678",
+    country: "Côte d'Ivoire",
+  );
 
-  @override
-  void initState() {
-    super.initState();
-    user = _auth.currentUser;
-    _usernameController.text = user?.displayName ?? '';
-    _emailController.text = user?.email ?? '';
-  }
+  void _editField(String field, String currentValue) async {
+    TextEditingController controller = TextEditingController(text: currentValue);
 
-  Future<void> _editProfile() async {
-    try {
-      if (_usernameController.text.isNotEmpty && _usernameController.text != user?.displayName) {
-        await user?.updateDisplayName(_usernameController.text);
-      }
-
-      if (_emailController.text.isNotEmpty && _emailController.text != user?.email) {
-        await user?.updateEmail(_emailController.text);
-      }
-
-      if (_newPasswordController.text.isNotEmpty) {
-        await user?.updatePassword(_newPasswordController.text);
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profil mis à jour avec succès !')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur : ${e.toString()}')),
-      );
-    }
-  }
-
-  Future<void> _reauthenticateAndEditProfile() async {
-    try {
-      if (user == null) return;
-
-      String currentPassword = await _showPasswordDialog();
-
-      AuthCredential credential = EmailAuthProvider.credential(
-        email: user!.email!,
-        password: currentPassword,
-      );
-
-      await user!.reauthenticateWithCredential(credential);
-
-      await _editProfile();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur : ${e.toString()}')),
-      );
-    }
-  }
-
-  Future<String> _showPasswordDialog() async {
-    TextEditingController passwordController = TextEditingController();
-
-    String? password = await showDialog<String>(
+    await showModalBottomSheet(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Confirmation"),
-          content: TextField(
-            controller: passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(labelText: "Mot de passe actuel"),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Edit $field", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: field,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 15),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    switch (field) {
+                      case "Username":
+                        profile.username = controller.text;
+                        break;
+                      case "Email":
+                        profile.email = controller.text;
+                        break;
+                      case "Phone":
+                        profile.phone = controller.text;
+                        break;
+                      case "Country":
+                        profile.country = controller.text;
+                        break;
+                    }
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text("Save"),
+              )
+            ],
           ),
-          actions: [
-            TextButton(
-              child: const Text("Annuler"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text("Valider"),
-              onPressed: () => Navigator.of(context).pop(passwordController.text),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (password == null || password.isEmpty) {
-      throw Exception("Mot de passe requis pour cette opération.");
-    }
-
-    return password;
-  }
-
-  Widget _buildEditableField(String label, TextEditingController controller, {bool obscure = false}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: TextField(
-        obscureText: obscure,
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          suffixIcon: const Icon(Icons.edit, size: 18),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          filled: true,
-          fillColor: const Color(0xFFF6F6F6),
         ),
       ),
     );
@@ -124,69 +87,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFE5F7F7),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: const Color(0xFF1AB3A6),
+        title: const Text("Profile", style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: _reauthenticateAndEditProfile,
-            child: const Text('Enregistrer', style: TextStyle(color: Colors.blue)),
-          )
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+          const CircleAvatar(
+            radius: 50,
+            backgroundImage: AssetImage('assets/pro.jpg'), 
+          ),
+          const SizedBox(height: 10),
+          Text(
+            profile.username,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            profile.email,
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                ProfileItem(label: "Username", value: profile.username, onTap: () => _editField("Username", profile.username)),
+                ProfileItem(label: "Email", value: profile.email, onTap: () => _editField("Email", profile.email)),
+                ProfileItem(label: "Phone", value: profile.phone, onTap: () => _editField("Phone", profile.phone)),
+                ProfileItem(label: "Country", value: profile.country, onTap: () => _editField("Country", profile.country)),
+              ],
+            ),
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: ElevatedButton(
+              onPressed: () {
+                
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1AB3A6),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              child: const Text("Sign Out", style: TextStyle(fontSize: 16)),
+            ),
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    );
+  }
+}
+
+class ProfileItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final VoidCallback onTap;
+
+  const ProfileItem({
+    required this.label,
+    required this.value,
+    required this.onTap,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Row(
             children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: const [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/pro.jpg'),
-                  ),
-                  CircleAvatar(
-                    radius: 12,
-                    backgroundColor: Colors.black,
-                    child: Icon(Icons.camera_alt, color: Colors.white, size: 14),
-                  )
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Modifier le profil',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 16),
-              _buildEditableField('Nom d\'utilisateur', _usernameController),
-              _buildEditableField('Email', _emailController),
-              const SizedBox(height: 24),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Modifier le mot de passe',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 16),
-              _buildEditableField('Nouveau mot de passe', _newPasswordController, obscure: true),
-              const SizedBox(height: 40),
+              Text("$label:", style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 10),
+              Expanded(child: Text(value)),
+              const Icon(Icons.edit, size: 18, color: Colors.grey),
             ],
           ),
-        ),
+          const Divider(thickness: 1, color: Colors.grey),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }
