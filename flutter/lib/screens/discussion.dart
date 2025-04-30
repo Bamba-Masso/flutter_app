@@ -31,14 +31,14 @@ class _DiscussionState extends State<Discussion> {
   body: Column(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      // StreamBuilder pour afficher les messages
+     
       Expanded(
         child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("Chats")
               .doc(chatId)
               .collection(chatId)
-              // .orderBy('timeStamps', descending: false)
+             .orderBy('timeStamps', descending: false)
               .snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {

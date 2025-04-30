@@ -4,20 +4,48 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/services/firebase/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:chat_app/screens/home_screen.dart';
+import 'package:chat_app/screens/contact.dart';
+import 'package:chat_app/screens/getDiscussion.dart';
 import 'package:chat_app/composants/message.dart';
 
-class ChatScreen extends StatelessWidget {
-  ChatScreen({super.key});
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
+
+  @override
+  State<ChatScreen> createState() {
+    return ChatScreenState();
+  }
+}
+
+class ChatScreenState extends State<ChatScreen> {
+  int pageIndex = 0;
   final User? user = Auth().currentUser;
+  final TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance;
+    // final currentUser = FirebaseAuth.instance;
 
+    if (user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final currentUserUid = user!.uid;
+    final userMail = user!.email ?? "";
+    final userUsername = user!.displayName ?? "Utilisateur";
+
+    final pages = [
+      DiscussionPage(
+        currentUserUid: currentUserUid,
+        userMail: userMail,
+        userUsername: userUsername,
+      ),
+      ContactPage(),
+    ];
     return Scaffold(
+      // body: pages[pageIndex],
       appBar: AppBar(
-        
-        title: Text( user?.displayName?? ""),
+        title: Text(user?.displayName ?? ""),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -29,57 +57,27 @@ class ChatScreen extends StatelessWidget {
               );
             },
           ),
-          IconButton(
-            onPressed: (){},
-             icon: const Icon(Icons.person))
+          IconButton(onPressed: () {}, icon: const Icon(Icons.person)),
         ],
       ),
 
       backgroundColor: const Color(0xFFE0F2F1),
-
-      body: StreamBuilder(
-     
-        stream:
-            FirebaseFirestore.instance
-                .collection("Users")
-                .where("uid", isNotEqualTo: currentUser.currentUser!.uid)
-                .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return Text("aucun utilisateur");
-          }
-          List<dynamic> users = [];
-          snapshot.data!.docs.forEach((_element) {
-            users.add(_element);
+      body: pages[pageIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: pageIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            pageIndex = index;
           });
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              final userMail = user["email"];
-              final userUid = user['uid'];
-              final userUsername = user['username'];
-
-              // return Message(userMail:userMail , userUid:userUid);
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => Discussion(mail: userMail, uid: userUid, username:userUsername),
-                    ),
-                  );
-                },
-                child: Message(userMail: userMail, userUid: userUid, userUsername: userUsername,),
-              );
-            },
-          );
         },
-       
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.message), label: "Discussion"),
+          NavigationDestination(
+            icon: Icon(Icons.contact_emergency_outlined),
+            label: "Contact",
+          ),
+        ],
       ),
-
     );
   }
 }
@@ -87,48 +85,3 @@ class ChatScreen extends StatelessWidget {
 extension on User? {
   get username => null;
 }
-
-// class ChatItem extends StatelessWidget {
-//   final String name;
-//   final String country;
-//   final String image;
-//   final bool isNew;
-
-//   const ChatItem({
-//     super.key,
-//     required this.name,
-//     required this.country,
-//     required this.image,
-//     this.isNew = false,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       color: Colors.white,
-//       margin: const EdgeInsets.only(bottom: 12),
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-//       child: ListTile(
-//         leading: CircleAvatar(
-//           backgroundImage: AssetImage(image),
-//           radius: 25,
-//         ),
-//         title: Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
-//         subtitle: Text(country),
-//         trailing: isNew
-//             ? Container(
-//                 padding: const EdgeInsets.all(6),
-//                 decoration: BoxDecoration(
-//                   color: Colors.teal,
-//                   borderRadius: BorderRadius.circular(15),
-//                 ),
-//                 child: const Text(
-//                   'Nouveau',
-//                   style: TextStyle(color: Colors.white, fontSize: 12),
-//                 ),
-//               )
-//             : null,
-//       ),
-//     );
-//   }
-// }
