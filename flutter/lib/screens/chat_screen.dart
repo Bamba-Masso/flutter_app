@@ -1,5 +1,6 @@
 import 'package:chat_app/screens/discussion.dart';
 import 'package:chat_app/screens/one_screen.dart';
+import 'package:chat_app/screens/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/services/firebase/auth.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_app/screens/contact.dart';
 import 'package:chat_app/screens/getDiscussion.dart';
 import 'package:chat_app/composants/message.dart';
+import 'package:chat_app/screens/profile_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -24,8 +26,6 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final currentUser = FirebaseAuth.instance;
-
     if (user == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -40,10 +40,10 @@ class ChatScreenState extends State<ChatScreen> {
         userMail: userMail,
         userUsername: userUsername,
       ),
-      ContactPage(),
+      const ContactPage(),
     ];
+
     return Scaffold(
-      // body: pages[pageIndex],
       appBar: AppBar(
         title: Text(user?.displayName ?? ""),
         actions: [
@@ -57,10 +57,17 @@ class ChatScreenState extends State<ChatScreen> {
               );
             },
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.person)),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+          ),
         ],
       ),
-
       backgroundColor: const Color(0xFFE0F2F1),
       body: pages[pageIndex],
       bottomNavigationBar: NavigationBar(
@@ -80,8 +87,4 @@ class ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-}
-
-extension on User? {
-  get username => null;
 }
