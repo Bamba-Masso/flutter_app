@@ -1,12 +1,13 @@
-import 'package:chat_app/screens/discussion.dart';
+// import 'package:chat_app/screens/discussion.dart';
 import 'package:chat_app/screens/one_screen.dart';
+import 'package:chat_app/screens/profil_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/services/firebase/auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_app/screens/contact.dart';
 import 'package:chat_app/screens/getDiscussion.dart';
-import 'package:chat_app/composants/message.dart';
+// import 'package:chat_app/composants/message.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -19,12 +20,13 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> {
   int pageIndex = 0;
+
   final User? user = Auth().currentUser;
   final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // final currentUser = FirebaseAuth.instance;
+    final currentUser = FirebaseAuth.instance;
 
     if (user == null) {
       return const Center(child: CircularProgressIndicator());
@@ -57,7 +59,15 @@ class ChatScreenState extends State<ChatScreen> {
               );
             },
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.person)),
+
+          IconButton(onPressed: () {
+             Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ),
+              );
+          }, icon: const Icon(Icons.person)),
         ],
       ),
 
@@ -68,6 +78,7 @@ class ChatScreenState extends State<ChatScreen> {
         onDestinationSelected: (int index) {
           setState(() {
             pageIndex = index;
+
           });
         },
         destinations: const [
@@ -85,3 +96,4 @@ class ChatScreenState extends State<ChatScreen> {
 extension on User? {
   get username => null;
 }
+

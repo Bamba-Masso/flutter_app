@@ -38,13 +38,14 @@ class _DiscussionState extends State<Discussion> {
               .collection("Chats")
               .doc(chatId)
               .collection(chatId)
-             .orderBy('timeStamps', descending: false)
+              .orderBy('timeStamps', descending: false)
               .snapshots(),
+
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: Text("Aucun message pour l'instant"));
             }
-            
+
             List<dynamic> messages = [];
             snapshot.data!.docs.forEach((_element){
               messages.add(_element);
@@ -94,6 +95,7 @@ class _DiscussionState extends State<Discussion> {
                     auth.currentUser!.uid,
                     widget.uid,
                     messageController.text,
+                    // DateTime.now().toString(), 
                   );
                   messageController.text = "";
                 }
