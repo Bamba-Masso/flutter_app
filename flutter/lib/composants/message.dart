@@ -16,7 +16,7 @@ class Message extends StatelessWidget {
         width: 60,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: const Color.fromARGB(255, 9, 153, 105),
+          color: const Color.fromARGB(255, 11, 148, 114),
         ),
         child: Icon(Icons.person, color: Colors.white),
       ),

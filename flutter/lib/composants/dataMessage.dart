@@ -21,7 +21,7 @@ class _MessageState extends State<DataMessage> {
           margin: EdgeInsets.fromLTRB(15, 8, 15, 8),
           padding:EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: widget.currentUid == widget.rUid? Colors.green : Colors.grey,
+            color: widget.currentUid == widget.rUid? const Color.fromARGB(255, 66, 165, 135) : Colors.grey,
             borderRadius: BorderRadius.circular(12)
           ),
           child: Text(widget.message),

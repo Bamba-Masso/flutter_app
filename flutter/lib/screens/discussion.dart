@@ -92,13 +92,13 @@ class _DiscussionState extends State<Discussion> {
             ),
           ),
 
-          // Barre de saisie avec icône +
+          
           Container(
             color: pastelColor,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             child: Row(
               children: [
-                // Icône +
+                
                 GestureDetector(
                   onTap: () {
                     print("Ouvrir options : emoji ou image");
@@ -117,7 +117,7 @@ class _DiscussionState extends State<Discussion> {
                 ),
                 const SizedBox(width: 10),
 
-                // Champ de texte
+            
                 Expanded(
                   child: TextField(
                     controller: messageController,
@@ -135,7 +135,7 @@ class _DiscussionState extends State<Discussion> {
                 ),
                 const SizedBox(width: 10),
 
-                // Bouton d'envoi
+               
                 GestureDetector(
                   onTap: () {
                     if (messageController.text.isNotEmpty) {

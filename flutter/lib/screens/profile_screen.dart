@@ -1,36 +1,49 @@
 import 'package:flutter/material.dart';
-
-class UserProfile {
-  String username;
-  String email;
-  String phone;
-  String country;
-
-  UserProfile({
-    required this.username,
-    required this.email,
-    required this.phone,
-    required this.country,
-  });
-}
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  UserProfile profile = UserProfile(
-    username: "arielle20",
-    email: "arielle@email.com",
-    phone: "+22512345678",
-    country: "Côte d'Ivoire",
-  );
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void _editField(String field, String currentValue) async {
-    TextEditingController controller = TextEditingController(text: currentValue);
+  bool _isLoading = true;
+  late User _user;
+  String username = '';
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    _user = _auth.currentUser!;
+    try {
+      final doc = await _firestore.collection('users').doc(_user.uid).get();
+      final data = doc.data();
+      setState(() {
+        username = data?['username'] ?? _user.displayName ?? 'Utilisateur';
+        email = data?['email'] ?? _user.email ?? '';
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Erreur lors du chargement : $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _editField(String fieldName, String currentValue) async {
+    final controller = TextEditingController(text: currentValue);
 
     await showModalBottomSheet(
       context: context,
@@ -45,37 +58,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Edit $field", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text("Modifier $fieldName", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               TextField(
                 controller: controller,
-                decoration: InputDecoration(
-                  labelText: field,
-                  border: const OutlineInputBorder(),
-                ),
+                decoration: InputDecoration(labelText: fieldName),
               ),
               const SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    switch (field) {
-                      case "Username":
-                        profile.username = controller.text;
-                        break;
-                      case "Email":
-                        profile.email = controller.text;
-                        break;
-                      case "Phone":
-                        profile.phone = controller.text;
-                        break;
-                      case "Country":
-                        profile.country = controller.text;
-                        break;
+                onPressed: () async {
+                  final newValue = controller.text.trim();
+                  if (newValue.isNotEmpty) {
+                    setState(() => _isLoading = true);
+                    if (fieldName == "Username") {
+                      await _user.updateDisplayName(newValue);
+                      await _firestore.collection('users').doc(_user.uid).update({'username': newValue});
+                      username = newValue;
+                    } else if (fieldName == "Email") {
+                      await _user.updateEmail(newValue);
+                      await _firestore.collection('users').doc(_user.uid).update({'email': newValue});
+                      email = newValue;
                     }
-                  });
+                  }
                   Navigator.pop(context);
+                  setState(() => _isLoading = false);
                 },
-                child: const Text("Save"),
+                child: const Text("Enregistrer"),
               )
             ],
           ),
@@ -86,38 +94,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
-      backgroundColor: const Color(0xFFE5F7F7),
       appBar: AppBar(
+        title: const Text("Mon Profil"),
         backgroundColor: const Color(0xFF1AB3A6),
-        title: const Text("Profile", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
+      backgroundColor: const Color(0xFFE5F7F7),
       body: Column(
         children: [
           const SizedBox(height: 30),
           const CircleAvatar(
             radius: 50,
-            backgroundImage: AssetImage('assets/images/img3.png'), 
+            backgroundImage: AssetImage('assets/images/img2.png'),
           ),
           const SizedBox(height: 10),
-          Text(
-            profile.username,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            profile.email,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(username, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(email, style: const TextStyle(color: Colors.grey)),
           const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                ProfileItem(label: "Username", value: profile.username, onTap: () => _editField("Username", profile.username)),
-                ProfileItem(label: "Email", value: profile.email, onTap: () => _editField("Email", profile.email)),
-                ProfileItem(label: "Phone", value: profile.phone, onTap: () => _editField("Phone", profile.phone)),
-                ProfileItem(label: "Country", value: profile.country, onTap: () => _editField("Country", profile.country)),
+                _ProfileItem(label: "Username", value: username, onTap: () => _editField("Username", username)),
+                _ProfileItem(label: "Email", value: email, onTap: () => _editField("Email", email)),
               ],
             ),
           ),
@@ -125,15 +131,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: ElevatedButton(
-              onPressed: () {
-                
+              onPressed: () async {
+                await _auth.signOut();
+                Navigator.of(context).pop(); 
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1AB3A6),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
-              child: const Text("Sign Out", style: TextStyle(fontSize: 16)),
+              child: const Text("Se déconnecter", style: TextStyle(fontSize: 16)),
             ),
           ),
         ],
@@ -142,17 +149,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class ProfileItem extends StatelessWidget {
+class _ProfileItem extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onTap;
 
-  const ProfileItem({
+  const _ProfileItem({
     required this.label,
     required this.value,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +168,7 @@ class ProfileItem extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text("$label:", style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text("$label :", style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(width: 10),
               Expanded(child: Text(value)),
               const Icon(Icons.edit, size: 18, color: Colors.grey),

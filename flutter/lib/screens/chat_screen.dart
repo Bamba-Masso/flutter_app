@@ -70,20 +70,37 @@ class ChatScreenState extends State<ChatScreen> {
       ),
       backgroundColor: const Color(0xFFE0F2F1),
       body: pages[pageIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: pageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            pageIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.message), label: "Discussion"),
-          NavigationDestination(
-            icon: Icon(Icons.contact_emergency_outlined),
-            label: "Contact",
-          ),
-        ],
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          indicatorColor: const Color(0xFFE0F2F1),
+          iconTheme: MaterialStateProperty.resolveWith<IconThemeData>((states) {
+            if (states.contains(MaterialState.selected)) {
+              return const IconThemeData(color: Color.fromARGB(255, 40, 146, 141));
+            }
+            return const IconThemeData(color: Colors.grey);
+          }),
+          labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>((states) {
+            if (states.contains(MaterialState.selected)) {
+              return const TextStyle(color: Color.fromARGB(255, 47, 131, 127));
+            }
+            return const TextStyle(color: Colors.grey);
+          }),
+        ),
+        child: NavigationBar(
+          selectedIndex: pageIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              pageIndex = index;
+            });
+          },
+          destinations: const [
+            NavigationDestination(icon: Icon(Icons.message), label: "Discussion"),
+            NavigationDestination(
+              icon: Icon(Icons.contact_emergency_outlined),
+              label: "Contact",
+            ),
+          ],
+        ),
       ),
     );
   }
