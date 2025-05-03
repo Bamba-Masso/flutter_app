@@ -39,8 +39,9 @@ Future<void> createUserWithEmailAndPassword(String username, String email, Strin
     );
 
     String? currentUser = credential.user?.uid;
-
+ 
     if (currentUser != null) {
+     await credential.user!.updateDisplayName(username);  
       await db.collection("Users").doc(currentUser).set({
         "email": email,
         "uid": currentUser,
@@ -69,9 +70,10 @@ Future<dynamic> signInWithGoogle() async {
     ); 
 
     final userCredential = await _firebaseAuth.signInWithCredential(credential);
+    
        final User? user = userCredential.user;
         if (user != null) {
-   
+  
     await FirebaseFirestore.instance.collection("Users").doc(userCredential.user?.uid).set({
     "email": userCredential.user?.email,
     "username": userCredential.user?.displayName,

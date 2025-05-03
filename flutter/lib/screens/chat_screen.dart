@@ -32,7 +32,7 @@ class ChatScreenState extends State<ChatScreen> {
 
     final currentUserUid = user!.uid;
     final userMail = user!.email ?? "";
-    final userUsername = user!.displayName ?? "Utilisateur";
+    final userUsername = user!.displayName ?? "";
 
     final pages = [
       DiscussionPage(

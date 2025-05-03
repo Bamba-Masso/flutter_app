@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final doc = await _firestore.collection('users').doc(_user.uid).get();
       final data = doc.data();
       setState(() {
-        username = data?['username'] ?? _user.displayName ?? 'Utilisateur';
+        username = data?['username'] ?? _user.displayName ?? '';
         email = data?['email'] ?? _user.email ?? '';
         _isLoading = false;
       });
