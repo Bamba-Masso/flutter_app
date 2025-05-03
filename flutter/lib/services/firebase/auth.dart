@@ -41,7 +41,7 @@ Future<void> createUserWithEmailAndPassword(String username, String email, Strin
     String? currentUser = credential.user?.uid;
  
     if (currentUser != null) {
-     await credential.user!.updateDisplayName(username);  
+    //  await credential.user!.updateDisplayName(username);  
       await db.collection("Users").doc(currentUser).set({
         "email": email,
         "uid": currentUser,
@@ -60,7 +60,7 @@ Future<void> createUserWithEmailAndPassword(String username, String email, Strin
 Future<dynamic> signInWithGoogle() async { 
     try { 
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn(); 
-    if (googleUser == null) return false; // L'utilisateur a annulé
+    if (googleUser == null) return false; 
 
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication; 
 
@@ -83,10 +83,10 @@ return true;
    
   }
    return false;
-    } on Exception catch (e,stack) { 
+    } on Exception catch (e) { 
     
      print("Connexion échouée : $e");
-     print("Stack trace : $stack");
+    
      return false;
     } 
   }
