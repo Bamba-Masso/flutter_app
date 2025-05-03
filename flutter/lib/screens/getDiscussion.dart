@@ -69,8 +69,8 @@ void initState() {
       stream: FirebaseFirestore.instance
           .collection('Discussion')
           .where('users', arrayContains: widget.currentUserUid)
-          .where('lastMessageTime'
-             )
+          .where('lastMessageTime',
+              isGreaterThan: Timestamp.fromMillisecondsSinceEpoch(0))
           .orderBy('lastMessageTime', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
